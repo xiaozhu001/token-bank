@@ -1,0 +1,8 @@
+{
+  "main": "./contracts/TokenBank.sol",
+  "deploy": "./build/contracts/ERC20.json",
+  "compilers": {
+    "cfxtruffle": "0.0.8",
+    "solc": "0.6.12"
+  }
+}

@@ -2,10 +2,11 @@ pragma solidity >=0.5.0 <= 0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./IERC20.sol";
+import "./ITokenExtend.sol";
 import "../lib/SafeMath.sol";
 import "../model/TokenInfoModel.sol";
 
-contract ERC20 is IERC20 {
+contract ERC20 is IERC20,ITokenExtend {
   using SafeMath for uint256;
 
   mapping (address => uint256) private _balances;
@@ -38,7 +39,7 @@ contract ERC20 is IERC20 {
     _mint(project, tokenInfo.total.mul(5).div(1000));
   } 
   
-  function getInfo() public view returns (TokenInfoModel.TokenInfo memory) {
+  function getInfo() public override view returns (TokenInfoModel.TokenInfo memory) {
     return tokenInfo;
   }
   /**

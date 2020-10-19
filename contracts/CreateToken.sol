@@ -13,7 +13,6 @@ contract CreateToken is ICreateToken {
         if (createToken.tokenType == 1) {
             ERC20 erc20 = new ERC20(owner, project, createToken);
             return address(erc20);
-            
         } else if (createToken.tokenType == 2) {
             ERC721 erc721 = new ERC721(owner, createToken);
             return address(erc721);

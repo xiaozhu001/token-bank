@@ -2,6 +2,10 @@ pragma solidity >=0.5.0 <= 0.7.0;
 pragma experimental ABIEncoderV2;
 
 library TokenInfoModel {
+    enum TokenType {
+        ERC20,
+        ERC721
+    }
     struct TokenInfo {
         uint8 tokenType;
         string tokenName;

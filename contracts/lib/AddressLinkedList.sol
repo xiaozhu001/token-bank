@@ -42,7 +42,7 @@ library AddressLinkedList {
     }
 
 
-    function add(LinkedList storage linkedList, address item) internal returns (uint){
+    function add(LinkedList storage linkedList, address item) internal returns (uint) {
         
         linkedList.index = linkedList.index + 1;
         linkedList.indexToNodeMap[linkedList.index] = Node(item, linkedList.index, 0, linkedList.header, true);
@@ -55,7 +55,7 @@ library AddressLinkedList {
         return linkedList.index;
     }
 
-    function addTail(LinkedList storage linkedList, address item) internal {
+    function addTail(LinkedList storage linkedList, address item) internal returns (uint) {
         
         linkedList.index = linkedList.index + 1;
         linkedList.indexToNodeMap[linkedList.index] = Node(item, linkedList.index, linkedList.tail, 0, true);
@@ -65,9 +65,10 @@ library AddressLinkedList {
             linkedList.header = linkedList.index;
         }
         linkedList.size = linkedList.size + 1;
+        return linkedList.index;
     }
     
-    function insert(LinkedList storage linkedList, uint index, address item) internal {
+    function insert(LinkedList storage linkedList, uint index, address item) internal returns (uint) {
         require(index != 0, "index can not 0");
         Node storage node = linkedList.indexToNodeMap[index];
         require(node.exist, "index is error");
@@ -78,6 +79,7 @@ library AddressLinkedList {
         node.next = linkedList.index;
         
         linkedList.size = linkedList.size + 1;
+        return linkedList.index;
         
     }
 

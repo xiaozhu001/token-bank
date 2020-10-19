@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import "./lib/AddressLinkedList.sol";
 import "./model/TokenInfoModel.sol";
 import "./ICreateToken.sol";
+import "./token/ITokenExtend.sol";
 
 contract TokenBank {
 
@@ -16,16 +17,22 @@ contract TokenBank {
 
     mapping(string => address) shorthandNameToTokenMap;
 
+    struct Token {
+        bool exist;
+    }
+
+    mapping(address => Token) tokenMap;
+
     address owner;
-    // ICreateToken createToken;
+    ICreateToken createTokenContract;
 
     constructor() public {
         owner = msg.sender;
     }
 
-    // function setCreateToken(ICreateToken createTokenAddr) public {
-    //     createToken = createTokenAddr;
-    // }
+    function setCreateToken(ICreateToken createTokenAddr) public {
+        createTokenContract = createTokenAddr;
+    }
 
     function getTopToken(uint index, uint pageSize) public view returns(address[] memory, string[] memory) {
         (address[] memory items, uint[] memory indexs) = topTokenList.getList(index, pageSize);
@@ -54,9 +61,16 @@ contract TokenBank {
         return homeTokenList.getList(index, pageSize);
     }
 
-    function getTokenInfo(address userAccount, address token) public view returns(TokenInfoModel.TokenInfo memory, bool collection) {
+    function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) {
         // 调用用户合约获取是否收藏
         // 返回
+
+        Token memory token = tokenMap[tokenAddr];
+        if (!token.exist) {
+            return (tokenInfo, false);
+        }
+        
+        return (ITokenExtend(tokenAddr).getInfo(), false);
     }
 
     function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) {
@@ -76,16 +90,24 @@ contract TokenBank {
     }
 
     function publishToken(TokenInfoModel.CreateToken memory createToken) public {
-        // todo _shorthandName 参数校验
-        address token = address(0x0);
+        
+        require(checkShorthandName(createToken.shorthandName), "shorthandName is error");
+
+        address token = createTokenContract.publishToken(msg.sender, owner, createToken);
         // todo token 调用 UserToken.addMyToken(token, owner);
 
         homeTokenList.add(token);
         shorthandNameToTokenMap[createToken.shorthandName] = token;
+        tokenMap[token] = Token(true);
     }
 
-    function removeToken(string memory _shorthandName) public {
-        // 校验是 Sensitive 
+    function removeToken(string memory shorthandName) public {
+        // todo 校验是 Sensitive 
+        address token = shorthandNameToTokenMap[shorthandName];
+        if (token == address(0x0)) {
+            return;
+        }
+
     }
 
 }

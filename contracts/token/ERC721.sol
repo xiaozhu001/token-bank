@@ -7,8 +7,9 @@ import "./IERC721.sol";
 import "./IERC721Receiver.sol";
 import "./ERC165.sol";
 import "../model/TokenInfoModel.sol";
+import "./ITokenExtend.sol";
 
-contract ERC721 is ERC165, IERC721 {
+contract ERC721 is ERC165, IERC721, ITokenExtend {
 
   using SafeMath for uint256;
   using Address for address;
@@ -63,7 +64,7 @@ contract ERC721 is ERC165, IERC721 {
     tokenInfo.createTime = now;
   } 
 
-  function getInfo() public view returns (TokenInfoModel.TokenInfo memory) {
+  function getInfo() public override view returns (TokenInfoModel.TokenInfo memory) {
     return tokenInfo;
   }
   /**

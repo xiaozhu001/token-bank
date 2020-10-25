@@ -11,11 +11,13 @@ contract UserToken{
     
     struct userToken{
         bool exist;
+        //uint8 tokenType;
         AddressLinkedList.LinkedList userTokenList;
     }
     
     struct collectionToken{
         bool exist;
+        //uint8 tokenType;
         AddressLinkedList.LinkedList CollectionTokenList;
 
     }
@@ -29,39 +31,51 @@ contract UserToken{
     //入参：(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize)
     //出参： (address[] tokens)
     //注释： > range 1：全部；2：erc20；3：erc721 。 option 1：我的收藏；2：我的创建
-    /*
+    
     function getUserTokenList(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize) public view returns(address[] memory tokens) {
-       
-       if(_range == 1){
-            if(_option == 1){
-                 (address[] memory items, uint[] memory indexs) = userToCollectionMap[_userAccount].CollectionTokenList.getList(index, pageSize);
-                string[] memory notes = new string[](items.length);
-                for (uint i = 0; i < items.length; i ++) {
-                    notes[i] = topTokenMap[items[i]];
-                }
+       require(_option == 1 || _option == 2,"ption require 1 or 2");
+       require(_range == 1 || _option == 2 || _option == 3,"require 1、2、3");
+       if(_option == 1){
+            if(_range == 1){
+                
+                (address[] memory items, uint[] memory indexs) = userToCollectionMap[_userAccount].CollectionTokenList.getList(pageNo, pageSize);
+                //string[] memory notes = new string[](items.length);
+                //for (uint i = 0; i < items.length; i ++) {
+                //   notes[i] = userToCollectionMap[_userAccount].CollectionTokenList.indexToNodeMap[i].item;
+                //}
                 return items;
                 
             }
-            else{
-                 (address[] memory items, uint[] memory indexs) = topTokenList.getList(index, pageSize);
-                string[] memory notes = new string[](items.length);
-                for (uint i = 0; i < items.length; i ++) {
-                    notes[i] = topTokenMap[items[i]];
-                }
-                return (items, notes);
+            /*
+            else  if (_range == 2){
                 
+                 (address[] memory items, uint[] memory indexs) = userToCollectionMap[_userAccount].CollectionTokenList.getList(pageNo, pageSize);
+                
+                return items;
             }
+            else{
+                 (address[] memory items, uint[] memory indexs) = userToCollectionMap[_userAccount].CollectionTokenList.getList(pageNo, pageSize);
+                
+                return items;
+            }
+            */
            
         }
-        else if(_range == 2){
-            //发ying'huyinghu
-        }
-        else if(_range == 3){
-            
+        else {
+             if(_range == 1){
+                
+                (address[] memory items, uint[] memory indexs) = userToTokenMap[_userAccount].userTokenList.getList(pageNo, pageSize);
+                //string[] memory notes = new string[](items.length);
+                //for (uint i = 0; i < items.length; i ++) {
+                //    notes[i] = userToTokenMap[_userAccount].userTokenList.indexToNodeMap[i].item;
+                //}
+                return items;
+                
+            }
         }
         
     }
-    */
+    
     
     //入参： (address _token, uint _option)
     //出参： (string result)

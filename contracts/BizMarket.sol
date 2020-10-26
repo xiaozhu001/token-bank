@@ -4,25 +4,25 @@ pragma experimental ABIEncoderV2;
 contract BizMarket{
     string bannerListStr;
     string hotSearchListStr;
-    //11¡¢ÉèÖÃbanner 
+    //11ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½banner 
     function setBanner(string memory _bannerListStr) public {
         
         bannerListStr = _bannerListStr;
     }
     
-    //10¡¢²éÑ¯banner  ³ö²Î¸ñÊ½ÊÇjson×Ö·û´®£¬ÓÉÇ°¶Ë½øÐÐ×ÔÐÐ¶¨Òå¡£
+    //10ï¿½ï¿½ï¿½ï¿½Ñ¯banner  ï¿½ï¿½ï¿½Î¸ï¿½Ê½ï¿½ï¿½jsonï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½å¡£
     function getBanner() public view returns(string memory){
         
         return bannerListStr;
     }
     
-     //13¡¢ÉèÖÃÈÈÃÅËÑË÷
+     //13ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     function setHotSearch(string memory _hotSearchListStr) public {
         
         hotSearchListStr = _hotSearchListStr;
     }
     
-    //12¡¢²éÑ¯ÈÈÃÅËÑË÷  ³ö²Î¸ñÊ½ÊÇjson×Ö·û´®£¬ÓÉÇ°¶Ë½øÐÐ×ÔÐÐ¶¨Òå¡£
+    //12ï¿½ï¿½ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  ï¿½ï¿½ï¿½Î¸ï¿½Ê½ï¿½ï¿½jsonï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ë½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½å¡£
     function getHotSearch() public view returns(string memory){
         
         return hotSearchListStr;

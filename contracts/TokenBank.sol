@@ -1,10 +1,10 @@
 pragma solidity >=0.5.0 <= 0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "./lib/AddressLinkedList.sol";
-import "./model/TokenInfoModel.sol";
+import "./AddressLinkedList.sol";
+import "./TokenInfoModel.sol";
 import "./ICreateToken.sol";
-import "./token/ITokenExtend.sol";
+import "./ITokenExtend.sol";
 
 contract TokenBank {
 

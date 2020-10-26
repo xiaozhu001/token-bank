@@ -1,5 +1,5 @@
 pragma solidity >=0.4.0 <0.7.0;
-import "./lib/AddressLinkedList.sol";
+import "./AddressLinkedList.sol";
 
 contract UserToken{
     using AddressLinkedList for AddressLinkedList.LinkedList;

@@ -3,8 +3,8 @@ pragma experimental ABIEncoderV2;
 
 import "./IERC20.sol";
 import "./ITokenExtend.sol";
-import "../lib/SafeMath.sol";
-import "../model/TokenInfoModel.sol";
+import "./SafeMath.sol";
+import "./TokenInfoModel.sol";
 
 contract ERC20 is IERC20,ITokenExtend {
   using SafeMath for uint256;

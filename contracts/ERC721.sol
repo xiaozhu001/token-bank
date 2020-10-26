@@ -1,12 +1,12 @@
 pragma solidity >=0.5.0 <= 0.7.0;
 pragma experimental ABIEncoderV2;
 
-import "../lib/SafeMath.sol";
-import "../lib/Address.sol";
+import "./SafeMath.sol";
+import "./Address.sol";
 import "./IERC721.sol";
 import "./IERC721Receiver.sol";
 import "./ERC165.sol";
-import "../model/TokenInfoModel.sol";
+import "./TokenInfoModel.sol";
 import "./ITokenExtend.sol";
 
 contract ERC721 is ERC165, IERC721, ITokenExtend {

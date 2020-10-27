@@ -1,55 +1,58 @@
 pragma solidity >=0.5.0 <0.7.0;
 pragma experimental ABIEncoderV2;
-import "./StringLinkedList.sol";
-import "./TokenBank.sol";
+import "./ITokenBank.sol";
 
 contract Sensitive {
-    //TOKEN合约地址
-    using StringLinkedList for StringLinkedList.LinkedList;
-    StringLinkedList.LinkedList linkedList;
-
-    function getList(uint index, uint pageSize) public view returns (string[] memory, uint[] memory) {
-        return linkedList.getList(index, pageSize);
-    }
-
-    function getHeader() public view returns (uint index) {
-        index = linkedList.header;
+  
+    ITokenBank tokenBank;
+    address owner;
+    
+    mapping(string => bool) wordsMap;
+    
+    event del(string _words);
+    
+    constructor() public {
+        owner = msg.sender;
     }
     
-    function addWords(string memory _words) public{
+    modifier onlyOwner() {
+        require(msg.sender == owner,"onlyOwner");
+        _;
+    }
+    
+    
+    function setTokenBank(ITokenBank _tokenBank) public onlyOwner {
+        tokenBank = _tokenBank;
+    }
+    
+    function addWords(string memory _words) public onlyOwner {
         
-        require(!checkWords(_words),"敏感词已存在");
+        if (wordsMap[_words]) {
+            return;
+        }
+        
+        wordsMap[_words] = true;
+        
+
+        tokenBank.removeToken(_words);
+        
        
-        //添加敏感
-        linkedList.addTail(_words);
-        
-        //删除token
-        TokenBank.removeToken(_words);
-        
-        /*
-        TokenBank public t;
-         constructor(address t1) public {
-             t = Test1(t1);
-         }
-         t.removeToken(_words);
-      */
     }
     
-    function checkWords(string memory _words)  public view returns(bool result){
+    function checkWords(string memory _words)  public view returns(bool result) {
         
-        if(linkedList.stringToIndexMap[_words]==0) {
-            return false;
-        }
-        else{
-            return true;
-        }
+        return wordsMap[_words];
       
     }
     
     
-    function removeWord(uint index) public{
-        //测试有问题   位置错误
-       linkedList.remove(index);
+    function removeWord(string memory _words) public onlyOwner {
+        if (!wordsMap[_words]) {
+            return;
+        }
+        
+        delete wordsMap[_words];
+        emit del(_words);
         
     }
 

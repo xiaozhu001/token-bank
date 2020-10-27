@@ -1,262 +1,114 @@
 pragma solidity >=0.4.0 <0.7.0;
+pragma experimental ABIEncoderV2;
 import "./AddressLinkedList.sol";
+import "./ITokenExtend.sol";
 
 contract UserToken{
     using AddressLinkedList for AddressLinkedList.LinkedList;
+    address tokenBankAddress;
     
     address owner;
-    constructor() public {
+    enum TypeRange {
+        ALL,
+        ERC20,
+        ERC721
+    }
+    
+    enum UserOption {
+        COLLECTION,
+        CREATE
+    }
+    
+    
+    
+    constructor(address _tokenBankAddress) public {
         owner = msg.sender;
+        tokenBankAddress = _tokenBankAddress;
     }
-    
-    struct userToken{
-        bool exist;
-        AddressLinkedList.LinkedList userTokenList;
-    }
-    struct user20Token{
-        bool exist;
-        AddressLinkedList.LinkedList userTokenList;
-    }
-    struct user721Token{
-        bool exist;
-        AddressLinkedList.LinkedList userTokenList;
-    }
-    
-    struct collectionToken{
-        bool exist;
-        AddressLinkedList.LinkedList collectionTokenList;
-
-    }
-    struct collection20Token{
-        bool exist;
-        AddressLinkedList.LinkedList collectionTokenList;
-
-    }
-    struct collection721Token{
-        bool exist;
-        AddressLinkedList.LinkedList collectionTokenList;
-
-    }
-    
-    mapping(address => userToken)  userToTokenMap;//Ó³Éäusertoken
-    mapping(address => user20Token)  user20ToTokenMap;//Ó³Éäusertoken
-    mapping(address => user721Token)  user721ToTokenMap;//Ó³Éäusertoken
-    
-    mapping(address => collectionToken)  userToCollectionMap;//Ó³Éäcollectiontoken
-    mapping(address => collection20Token)  user20ToCollectionMap;//Ó³Éäcollectiontoken
-    mapping(address => collection721Token)  user721ToCollectionMap;//Ó³Éäcollectiontoken
    
     
-    //Èë²Î£º(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize)
-    //³ö²Î£º (address[] tokens)
-    //×¢ÊÍ£º > range 1£ºÈ«²¿£»2£ºerc20£»3£ºerc721 ¡£ option 1£ºÎÒµÄÊÕ²Ø£»2£ºÎÒµÄ´´½¨
+    modifier onlyTokenBank() {
+        require(tokenBankAddress == msg.sender,"onlyTokenBank");
+        _;
+    }
     
-    function getUserTokenList(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize) public view returns(address[] memory tokens) {
-       require(_option == 1 || _option == 2,"ption require 1 or 2");
-       require(_range == 1 || _option == 2 || _option == 3,"require 1¡¢2¡¢3");
+    // account =>option =>range => list
+    mapping(address => mapping(uint8 => mapping(uint8 => AddressLinkedList.LinkedList))) userTokenListMap;
+    // account =>option =>range => token => index
+    mapping(address => mapping(uint8 => mapping(uint8 => mapping(address => uint)))) userTokenIndexMap;
+    
+    
+
+    //range 1ï¼šå…¨éƒ¨ï¼›2ï¼šerc20ï¼›3ï¼šerc721 ã€‚ option 1ï¼šæˆ‘çš„æ”¶è—ï¼›2ï¼šæˆ‘çš„åˆ›å»º
+    
+    function getUserTokenList(uint8 _range, uint8 _option, address _userAccount, uint index, uint pageSize) public view returns(address[] memory itemList, uint[] memory indexList) {
+       require(_range == uint8(TypeRange.ERC20) || _range == uint8(TypeRange.ERC721) || _range == uint8(TypeRange.ALL) ,"range require 0 1 2 ");
+       require(_option == uint8(UserOption.COLLECTION) || _option == uint8(UserOption.CREATE),"require 0 1");
        
-       if(_option == 1){
-            if(_range == 1){
-                
-                (address[] memory items, uint[] memory indexs) = userToCollectionMap[_userAccount].collectionTokenList.getList(pageNo, pageSize);
-                //string[] memory notes = new string[](items.length);
-                //for (uint i = 0; i < items.length; i ++) {
-                //   notes[i] = userToCollectionMap[_userAccount].collectionTokenList.indexToNodeMap[i].item;
-                //}
-                return items;
-                
-            }
-            
-            else  if (_range == 2){
-                
-                (address[] memory items, uint[] memory indexs) = user20ToCollectionMap[_userAccount].collectionTokenList.getList(pageNo, pageSize);
-                
-                return items;
-            }
-            else{
-                 (address[] memory items, uint[] memory indexs) = user721ToCollectionMap[_userAccount].collectionTokenList.getList(pageNo, pageSize);
-                
-                return items;
-            }
-            
-           
-        }
-        else {
-            if(_range == 1){
-                
-                (address[] memory items, uint[] memory indexs) = userToTokenMap[_userAccount].userTokenList.getList(pageNo, pageSize);
-                //string[] memory notes = new string[](items.length);
-                //for (uint i = 0; i < items.length; i ++) {
-                //   notes[i] = userToCollectionMap[_userAccount].userTokenList.indexToNodeMap[i].item;
-                //}
-                return items;
-                
-            }
-            
-            else  if (_range == 2){
-                
-                (address[] memory items, uint[] memory indexs) = user20ToTokenMap[_userAccount].userTokenList.getList(pageNo, pageSize);
-                
-                return items;
-            }
-            else{
-                 (address[] memory items, uint[] memory indexs) = user721ToTokenMap[_userAccount].userTokenList.getList(pageNo, pageSize);
-                
-                return items;
-            }
-        }
+       return userTokenListMap[_userAccount][_option][_range].getList(index,pageSize);
+       
         
     }
     
     
-    //Èë²Î£º (address _token, uint _option, uint _tokenType)   1£ºerc20£¬2£ºerc721
-    //³ö²Î£º (string result)
-    //×¢ÊÍ£º> _option 1£ºÊÕ²Ø£» 2£ºÈ¡ÏûÊÕ²Ø¡£ result 'success'£º³É¹¦£»'not exists'£ºtoken²»´æÔÚ¡£
+
+    //_option 1ï¼šæ”¶è—ï¼› 2ï¼šå–æ¶ˆæ”¶è—ã€‚ result 'success'ï¼šæˆåŠŸï¼›'not exists'ï¼štokenä¸å­˜åœ¨ã€‚
     
-    function collectionToken(address _token, uint _option, uint _tokenType) public  returns(string memory result){
+    function collectionToken(address _token, uint _option) public {
         
         require(_option == 1 || _option == 2,"optionrequire 1 or 2");
-        require(_tokenType == 1 || _tokenType == 2,"tokenTyperequire 1 or 2");
         
-        collectionToken memory collectiontoken = userToCollectionMap[owner];
-        collection20Token memory collection20token = user20ToCollectionMap[owner];
-        collection721Token memory collection721token = user721ToCollectionMap[owner];
+        _addUserToken(_token, uint8(UserOption.COLLECTION), msg.sender, _option == 1);
         
-        if(!collectiontoken.exist ){
-            
-           if(_option == 1){
-               
-                userToCollectionMap[owner] = collectiontoken;
-                userToCollectionMap[owner].exist = true ;
-                userToCollectionMap[owner].collectionTokenList.add(_token);
-                
-                if(_tokenType == 1) {
-                    user20ToCollectionMap[owner] = collection20token;
-                    user20ToCollectionMap[owner].exist = true ;
-                    user20ToCollectionMap[owner].collectionTokenList.add(_token);
-                }
-                else {
-                    user721ToCollectionMap[owner] = collection721token;
-                    user721ToCollectionMap[owner].exist = true ;
-                    user721ToCollectionMap[owner].collectionTokenList.add(_token);
-                }
-                
-                return 'success';
-            }
-            else{
-                
-                return 'not Collection';
-                
-            }
-        }
-        else{
-            
-            if(_option == 1){
-                 
-                return 'exist,not Collection';
-                
-            }
-            else{
-                
-                uint  index = userToCollectionMap[owner].CollectionTokenList.addressToIndexMap[_token];
-                userToCollectionMap[owner].CollectionTokenList.remove(index);
-                
-                if(_tokenType == 1) {
-                    
-                    uint  index20 = user20ToCollectionMap[owner].CollectionTokenList.addressToIndexMap[_token];
-                    user20ToCollectionMap[owner].CollectionTokenList.remove(index20);
-                }
-                else {
-                    
-                    uint  index721 = user721ToCollectionMap[owner].CollectionTokenList.addressToIndexMap[_token];
-                    user721ToCollectionMap[owner].CollectionTokenList.remove(index721);
-                }
-                
-                return 'success';
-               
-                
-            }
-            
-        }
-
-       
         
     }
 
     
-    //Èë²Î£º(address _token, address _userAccount, uint _tokenType)   1£ºerc20£¬2£ºerc721
-    //³ö²Î£º(bool result)
-    function addMyToken(address _token, address _userAccount, uint _tokenType) public  returns(bool result){
-        require(_tokenType == 1 || _tokenType == 2,"require 1¡¢2");
+
+    function addMyToken(address _token, address _userAccount, uint _tokenType) public onlyTokenBank {
+        require(_tokenType == 1 || _tokenType == 2,"require 1ï¿½ï¿½2");
         
-        userToken memory usertoken = userToTokenMap[_userAccount];
-        user20Token memory user20token = user20ToTokenMap[_userAccount];
-        user721Token memory user721token = user721ToTokenMap[_userAccount];
+        _addUserToken(_token,uint8(UserOption.CREATE),_userAccount,true);
         
-        require(!usertoken.exist, "token is exist!");
-        require(!user20token.exist, "token20 is exist!");
-        require(!user721token.exist, "token721 is exist!");
-            
-        userToTokenMap[_userAccount] = usertoken;
-        userToTokenMap[_userAccount].exist = true ;
-        userToTokenMap[_userAccount].userTokenList.add(_token);
-        
-        if(_tokenType == 1) {
-            
-            user20ToTokenMap[_userAccount] = user20token;
-            user20ToTokenMap[_userAccount].exist = true ;
-            user20ToTokenMap[_userAccount].userTokenList.add(_token);
-            
-        }
-        else {
-            
-            user721ToTokenMap[_userAccount] = user721token;
-            user721ToTokenMap[_userAccount].exist = true ;
-            user721ToTokenMap[_userAccount].userTokenList.add(_token);
-           
-        }
-        
-        return true;
 
     }
     
-/*
-#### 7¡¢»ñÈ¡ÓÃ»§tokenÁĞ±í
+    function _addUserToken(address _token, uint8 _option, address _userAccount, bool isDelete) internal {
+        uint index = userTokenListMap[_userAccount][_option][uint8(TypeRange.ALL)].add(_token);
+        ITokenExtend tokenExtend = ITokenExtend(_token);
+        TokenInfoModel.TokenInfo memory tokenInfo = tokenExtend.getInfo();
+        if (!isDelete) {
+            if(index != 0) {
+                return;
+            }
+            
+            uint addAllIndex = userTokenListMap[_userAccount][_option][uint8(TypeRange.ALL)].add(_token);
+            // account =>option =>range => token => index
+            userTokenIndexMap[_userAccount][_option][uint8(TypeRange.ALL)][_token]=addAllIndex;
+            
+            uint addIndex = userTokenListMap[_userAccount][_option][tokenInfo.tokenType].add(_token);
+            // account =>option =>range => token => index
+            userTokenIndexMap[_userAccount][_option][tokenInfo.tokenType][_token]=addIndex;
+            
+            
+        } else {
+            if(index == 0) {
+                return;
+            }
+            
+            userTokenListMap[_userAccount][_option][uint8(TypeRange.ALL)].remove(index);
+            // account =>option =>range => token => index
+            delete userTokenIndexMap[_userAccount][_option][uint8(TypeRange.ALL)][_token];
+            
+            uint index1 = userTokenIndexMap[_userAccount][_option][tokenInfo.tokenType][_token];
+            userTokenListMap[_userAccount][_option][tokenInfo.tokenType].remove(index1);
+            // account =>option =>range => token => index
+            delete userTokenIndexMap[_userAccount][_option][tokenInfo.tokenType][_token];
+             
+            
+        }
+    }
 
-ºÏÔ¼Ãû³Æ£ºUserToken
 
-ºÏÔ¼º¯Êı£ºgetUserTokenList
-
-Èë²Î£º(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize)
-
-³ö²Î£º (address[] tokens)
-
-×¢ÊÍ£º 
-> range 1£ºÈ«²¿£»2£ºerc20£»3£ºerc721 ¡£ option 1£ºÎÒµÄÊÕ²Ø£»2£ºÎÒµÄ´´½¨
-
-#### 8¡¢ÊÕ²Øtoken
-
-ºÏÔ¼Ãû³Æ£ºUserToken
-
-ºÏÔ¼º¯Êı£ºcollectionToken
-
-Èë²Î£º (address _token, uint _option)
-
-³ö²Î£º (string result)
-
-×¢ÊÍ£º
-> _option 1£ºÊÕ²Ø£» 2£ºÈ¡ÏûÊÕ²Ø¡£ result 'success'£º³É¹¦£»'not exists'£ºtoken²»´æÔÚ¡£
-
-#### 9¡¢Ìí¼ÓÎÒµÄtoken(¸øTokenBankÊ¹ÓÃ)
-
-ºÏÔ¼Ãû³Æ£ºUserToken
-
-ºÏÔ¼º¯Êı£ºaddMyToken
-
-Èë²Î£º(address _token, address _userAccount)
-
-³ö²Î£º(bool result)
-
-*/
     
 }

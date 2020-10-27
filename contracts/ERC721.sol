@@ -45,8 +45,13 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
    */
 
   TokenInfoModel.TokenInfo tokenInfo;
+
+  modifier onlyOwner() {
+    require(msg.sender == tokenInfo.owner, "only owner");
+    _;
+  }
   
-   constructor (address owner, TokenInfoModel.CreateToken memory createToken) public {
+   constructor (address owner, address project, TokenInfoModel.CreateToken memory createToken) public {
     // register the supported interfaces to conform to ERC721 via ERC165
     _registerInterface(_InterfaceId_ERC721);
     tokenInfo.tokenName = createToken.tokenName;
@@ -62,6 +67,7 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
     tokenInfo.tokenType = createToken.tokenType;
     tokenInfo.attribute = createToken.attribute;
     tokenInfo.createTime = now;
+    _mint(project, tokenInfo.total.mul(5).div(1000));
   } 
 
   function getInfo() public override view returns (TokenInfoModel.TokenInfo memory) {
@@ -150,6 +156,7 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
     require(_isApprovedOrOwner(msg.sender, tokenId));
     require(to != address(0));
 
+    _statistics(to);
     _clearApproval(from, tokenId);
     _removeTokenFrom(from, tokenId);
     _addTokenTo(to, tokenId);
@@ -234,6 +241,10 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
       isApprovedForAll(owner, spender)
     );
   }
+  
+  function airdrop(address account, uint256 tokenId) public onlyOwner {
+      _mint(account, tokenId);
+  }
 
   /**
    * @dev Internal function to mint a new token
@@ -243,6 +254,14 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
    */
   function _mint(address to, uint256 tokenId) internal {
     require(to != address(0));
+    
+    _statistics(to);
+    if (!tokenInfo.increase && tokenInfo.totalSupply.add(1) > tokenInfo.total) {
+      require(false, "can not increase");
+    }
+    
+    tokenInfo.totalSupply = tokenInfo.totalSupply.add(1);
+    
     _addTokenTo(to, tokenId);
     emit Transfer(address(0), to, tokenId);
   }
@@ -253,6 +272,10 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
    * @param tokenId uint256 ID of the token being burned by the msg.sender
    */
   function _burn(address owner, uint256 tokenId) internal {
+    require(tokenInfo.burning, "can not burning");
+
+    tokenInfo.totalSupply = tokenInfo.totalSupply.sub(1);
+    
     _clearApproval(owner, tokenId);
     _removeTokenFrom(owner, tokenId);
     emit Transfer(owner, address(0), tokenId);
@@ -317,5 +340,12 @@ contract ERC721 is ERC165, IERC721, ITokenExtend {
     bytes4 retval = IERC721Receiver(to).onERC721Received(
       msg.sender, from, tokenId, _data);
     return (retval == _ERC721_RECEIVED);
+  }
+  
+
+  function _statistics(address account) internal {
+    if (_ownedTokensCount[account] == 0) {
+      tokenInfo.holderNum = tokenInfo.holderNum.add(1);
+    }
   }
 }

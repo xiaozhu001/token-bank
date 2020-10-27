@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "./TokenInfoModel.sol";
 
-interface ICreateToken {
-    function publishToken(address owner, address project, TokenInfoModel.CreateToken calldata createToken) external returns(address);
+interface ITokenExtend {
+
+  function getInfo() external view returns (TokenInfoModel.TokenInfo memory);
 }

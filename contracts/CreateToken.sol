@@ -14,7 +14,7 @@ contract CreateToken is ICreateToken {
             ERC20 erc20 = new ERC20(owner, project, createToken);
             return address(erc20);
         } else if (createToken.tokenType == 2) {
-            ERC721 erc721 = new ERC721(owner, createToken);
+            ERC721 erc721 = new ERC721(owner, project, createToken);
             return address(erc721);
         } else {
             require(false, "tokenType is error");

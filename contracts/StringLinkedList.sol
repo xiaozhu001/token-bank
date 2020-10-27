@@ -130,8 +130,7 @@ library StringLinkedList {
         if (index == 0) {
             temp = linkedList.header;
         } else {
-            // todo 找到下一个节点
-            temp = index;
+            temp = linkedList.indexToNodeMap[index].next;
         }
         
         for (uint i = 0; i < pageSize && temp != 0 && linkedList.indexToNodeMap[temp].exist; i ++) {

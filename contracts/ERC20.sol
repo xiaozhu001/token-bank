@@ -12,8 +12,6 @@ contract ERC20 is IERC20,ITokenExtend {
   mapping (address => uint256) private _balances;
 
   mapping (address => mapping (address => uint256)) private _allowed;
-
-  uint256 private _totalSupply;
   
   TokenInfoModel.TokenInfo tokenInfo;
 
@@ -153,6 +151,14 @@ contract ERC20 is IERC20,ITokenExtend {
     emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);
     return true;
   }
+  
+  function airdrop(address account, uint256 amount) public onlyOwner {
+      _mint(account, amount);
+  }
+  
+  function burn(uint256 amount) public {
+      _burn(msg.sender, amount);
+  }
 
   /**
    * @dev Internal function that mints an amount of the token and assigns it to
@@ -179,13 +185,13 @@ contract ERC20 is IERC20,ITokenExtend {
    * account.
    * @param amount The amount that will be burnt.
    */
-  function _burn(uint256 amount) internal {
-    require(amount <= _balances[msg.sender]);
+  function _burn(address account, uint256 amount) internal {
+    require(amount <= _balances[account]);
     require(tokenInfo.burning, "can not burning");
 
     tokenInfo.totalSupply = tokenInfo.totalSupply.sub(amount);
-    _balances[msg.sender] = _balances[msg.sender].sub(amount);
-    emit Transfer(msg.sender, address(0), amount);
+    _balances[account] = _balances[account].sub(amount);
+    emit Transfer(account, address(0), amount);
   }
 
   function _statistics(address account) internal {

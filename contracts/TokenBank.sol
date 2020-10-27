@@ -5,8 +5,9 @@ import "./AddressLinkedList.sol";
 import "./TokenInfoModel.sol";
 import "./ICreateToken.sol";
 import "./ITokenExtend.sol";
+import "./ITokenBank.sol";
 
-contract TokenBank {
+contract TokenBank is ITokenBank {
 
     using AddressLinkedList for AddressLinkedList.LinkedList;
 

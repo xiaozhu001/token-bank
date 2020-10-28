@@ -6,6 +6,8 @@ import "./TokenInfoModel.sol";
 import "./ICreateToken.sol";
 import "./ITokenExtend.sol";
 import "./ITokenBank.sol";
+import "./ISensitive.sol";
+import "./IUserToken.sol";
 
 contract TokenBank is ITokenBank {
 
@@ -17,6 +19,7 @@ contract TokenBank is ITokenBank {
     mapping(address => string) topTokenMap;
 
     mapping(string => address) shorthandNameToTokenMap;
+    mapping(address => uint) tokenToIndexMap;
 
     struct Token {
         bool exist;
@@ -26,13 +29,22 @@ contract TokenBank is ITokenBank {
 
     address owner;
     ICreateToken createTokenContract;
+    ISensitive sensitiveContract;
+    IUserToken userTokenContract;
 
     constructor() public {
         owner = msg.sender;
     }
+    
+    modifier onlyOwner() {
+        require(msg.sender == owner, "onlyOwner");
+        _;
+    }
 
-    function setCreateToken(ICreateToken createTokenAddr) public {
+    function setCreateToken(ICreateToken createTokenAddr, ISensitive sensitiveAddr, IUserToken userTokenAddr) public onlyOwner {
         createTokenContract = createTokenAddr;
+        sensitiveContract = sensitiveAddr;
+        userTokenContract = userTokenAddr;
     }
 
     function getTopToken(uint index, uint pageSize) public view returns(address[] memory, string[] memory) {
@@ -44,12 +56,12 @@ contract TokenBank is ITokenBank {
         return (items, notes);
     }
 
-    function addTopToken(address token, string memory note) public {
+    function addTopToken(address token, string memory note) public onlyOwner {
         topTokenList.add(token);
         topTokenMap[token] = note;
     }
 
-    function removeTopToken(uint index) public {
+    function removeTopToken(uint index) public onlyOwner {
         AddressLinkedList.Node memory node = topTokenList.get(index);
         if (!node.exist) {
             return;
@@ -63,15 +75,13 @@ contract TokenBank is ITokenBank {
     }
 
     function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) {
-        // 调用用户合约获取是否收藏
-        // 返回
-
+        
         Token memory token = tokenMap[tokenAddr];
         if (!token.exist) {
             return (tokenInfo, false);
         }
-        
-        return (ITokenExtend(tokenAddr).getInfo(), false);
+        tokenInfo = ITokenExtend(tokenAddr).getInfo();
+        collection = userTokenContract.isCollection(userAccount, tokenAddr);
     }
 
     function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) {
@@ -83,8 +93,10 @@ contract TokenBank is ITokenBank {
     }
 
     function checkShorthandName(string memory shorthandName) public view returns(bool result) {
-        // 调用 Sensitive 校验；
-
+        
+        if (sensitiveContract.checkWords(shorthandName)) {
+            return false;
+        }
 
         address token = shorthandNameToTokenMap[shorthandName];
         return token == address(0x0);
@@ -96,19 +108,25 @@ contract TokenBank is ITokenBank {
 
         address token = createTokenContract.publishToken(msg.sender, owner, createToken);
         // todo token 调用 UserToken.addMyToken(token, owner);
+        
+        userTokenContract.addMyToken(token, msg.sender);
 
-        homeTokenList.add(token);
+        tokenToIndexMap[token] = homeTokenList.add(token);
         shorthandNameToTokenMap[createToken.shorthandName] = token;
         tokenMap[token] = Token(true);
     }
 
-    function removeToken(string memory shorthandName) public {
-        // todo 校验是 Sensitive 
+    function removeToken(string memory shorthandName) public override {
+        require(msg.sender == address(sensitiveContract), "only sensitive");
+        
         address token = shorthandNameToTokenMap[shorthandName];
         if (token == address(0x0)) {
             return;
         }
-
+        uint index = tokenToIndexMap[token];
+        homeTokenList.remove(index);
+        delete shorthandNameToTokenMap[shorthandName];
+        delete tokenMap[token];
     }
 
 }

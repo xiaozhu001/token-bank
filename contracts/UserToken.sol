@@ -2,8 +2,9 @@ pragma solidity >=0.4.0 <0.7.0;
 pragma experimental ABIEncoderV2;
 import "./AddressLinkedList.sol";
 import "./ITokenExtend.sol";
+import "./IUserToken.sol";
 
-contract UserToken{
+contract UserToken is IUserToken {
     using AddressLinkedList for AddressLinkedList.LinkedList;
     address tokenBankAddress;
     
@@ -65,8 +66,7 @@ contract UserToken{
 
     
 
-    function addMyToken(address _token, address _userAccount, uint _tokenType) public onlyTokenBank {
-        require(_tokenType == 1 || _tokenType == 2,"require 1��2");
+    function addMyToken(address _token, address _userAccount) external override onlyTokenBank {
         
         _addUserToken(_token,uint8(UserOption.CREATE),_userAccount,true);
         
@@ -109,6 +109,8 @@ contract UserToken{
         }
     }
 
-
+    function isCollection(address account, address token) external override view returns(bool) {
+        return userTokenIndexMap[account][uint8(UserOption.COLLECTION)][uint8(TypeRange.ALL)][token] != 0;
+    }
     
 }

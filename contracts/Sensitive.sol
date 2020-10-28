@@ -1,8 +1,9 @@
 pragma solidity >=0.5.0 <0.7.0;
 pragma experimental ABIEncoderV2;
 import "./ITokenBank.sol";
+import "./ISensitive.sol";
 
-contract Sensitive {
+contract Sensitive is ISensitive {
   
     ITokenBank tokenBank;
     address owner;
@@ -39,7 +40,7 @@ contract Sensitive {
        
     }
     
-    function checkWords(string memory _words)  public view returns(bool result) {
+    function checkWords(string calldata _words)  external override view returns(bool result) {
         
         return wordsMap[_words];
       

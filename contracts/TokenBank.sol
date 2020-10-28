@@ -41,7 +41,7 @@ contract TokenBank is ITokenBank {
         _;
     }
 
-    function setCreateToken(ICreateToken createTokenAddr, ISensitive sensitiveAddr, IUserToken userTokenAddr) public onlyOwner {
+    function setContract(ICreateToken createTokenAddr, ISensitive sensitiveAddr, IUserToken userTokenAddr) public onlyOwner {
         createTokenContract = createTokenAddr;
         sensitiveContract = sensitiveAddr;
         userTokenContract = userTokenAddr;
@@ -107,7 +107,6 @@ contract TokenBank is ITokenBank {
         require(checkShorthandName(createToken.shorthandName), "shorthandName is error");
 
         address token = createTokenContract.publishToken(msg.sender, owner, createToken);
-        // todo token 调用 UserToken.addMyToken(token, owner);
         
         userTokenContract.addMyToken(token, msg.sender);
 

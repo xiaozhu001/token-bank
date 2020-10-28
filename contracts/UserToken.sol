@@ -68,13 +68,13 @@ contract UserToken is IUserToken {
 
     function addMyToken(address _token, address _userAccount) external override onlyTokenBank {
         
-        _addUserToken(_token,uint8(UserOption.CREATE),_userAccount,true);
+        _addUserToken(_token, uint8(UserOption.CREATE), _userAccount, false);
         
 
     }
     
     function _addUserToken(address _token, uint8 _option, address _userAccount, bool isDelete) internal {
-        uint index = userTokenListMap[_userAccount][_option][uint8(TypeRange.ALL)].add(_token);
+        uint index = userTokenIndexMap[_userAccount][_option][uint8(TypeRange.ALL)][_token];
         ITokenExtend tokenExtend = ITokenExtend(_token);
         TokenInfoModel.TokenInfo memory tokenInfo = tokenExtend.getInfo();
         if (!isDelete) {

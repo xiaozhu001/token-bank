@@ -3,11 +3,11 @@ pragma experimental ABIEncoderV2;
 
 import "./AddressLinkedList.sol";
 import "./TokenInfoModel.sol";
-import "./ICreateToken.sol";
 import "./ITokenExtend.sol";
 import "./ITokenBank.sol";
 import "./ISensitive.sol";
 import "./IUserToken.sol";
+import "./ERC20.sol";
 
 contract TokenBank is ITokenBank {
 
@@ -28,7 +28,6 @@ contract TokenBank is ITokenBank {
     mapping(address => Token) tokenMap;
 
     address owner;
-    ICreateToken createTokenContract;
     ISensitive sensitiveContract;
     IUserToken userTokenContract;
 
@@ -41,8 +40,7 @@ contract TokenBank is ITokenBank {
         _;
     }
 
-    function setContract(ICreateToken createTokenAddr, ISensitive sensitiveAddr, IUserToken userTokenAddr) public onlyOwner {
-        createTokenContract = createTokenAddr;
+    function setContract(ISensitive sensitiveAddr, IUserToken userTokenAddr) public onlyOwner {
         sensitiveContract = sensitiveAddr;
         userTokenContract = userTokenAddr;
     }
@@ -106,7 +104,8 @@ contract TokenBank is ITokenBank {
         
         require(checkShorthandName(createToken.shorthandName), "shorthandName is error");
 
-        address token = createTokenContract.publishToken(msg.sender, owner, createToken);
+        ERC20 erc20 = new ERC20(msg.sender, owner, createToken);
+        address token = address(erc20);
         
         userTokenContract.addMyToken(token, msg.sender);
 

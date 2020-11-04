@@ -31,7 +31,6 @@ contract ERC20 is IERC20,ITokenExtend {
     tokenInfo.increase = createToken.increase;
     tokenInfo.decimals = createToken.decimals;
     tokenInfo.note = createToken.note;
-    tokenInfo.tokenType = createToken.tokenType;
     tokenInfo.attribute = createToken.attribute;
     tokenInfo.createTime = now;
     _mint(project, tokenInfo.total.mul(5).div(1000));

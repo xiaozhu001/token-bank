@@ -7,7 +7,6 @@ library TokenInfoModel {
         ERC721
     }
     struct TokenInfo {
-        uint8 tokenType;
         string tokenName;
         string shorthandName;
         address token;
@@ -24,9 +23,8 @@ library TokenInfoModel {
         string attribute;
         uint createTime;
     }
-    // [1,"ERC20","ERC20", 1000,"/abc",false,false,10,"abc","def"]
+    // ["ERC20","ERC20", 1000,"/abc",false,false,10,"abc","def"]
     struct CreateToken {
-        uint8 tokenType;
         string tokenName;
         string shorthandName;
         uint total;

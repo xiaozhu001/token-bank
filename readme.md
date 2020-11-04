@@ -746,3 +746,61 @@ tokenbank abi信息
   ]
 ~~~
 
+BizMarket abi信息
+~~~
+[
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_bannerListStr",
+          "type": "string"
+        }
+      ],
+      "name": "setBanner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBanner",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_hotSearchListStr",
+          "type": "string"
+        }
+      ],
+      "name": "setHotSearch",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getHotSearch",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+~~~
+

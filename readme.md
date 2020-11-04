@@ -11,78 +11,78 @@
 
 #### 1、TokenBank 合约
 // 查询首页列表
-function getHomeTokenList(uint index, uint pageSize) public view returns(address[] memory tokens, uint[] memory indexs)
+- function getHomeTokenList(uint index, uint pageSize) public view returns(address[] memory tokens, uint[] memory indexs)
 
 // 查询顶部token
-function getTopToken(uint index, uint pageSize) public view returns(address[] memory, string[] memory)
+- function getTopToken(uint index, uint pageSize) public view returns(address[] memory, string[] memory)
 
 // 添加顶部token
-function addTopToken(address token, string memory note) public
+- function addTopToken(address token, string memory note) public
 
 // 删除顶部token
-function removeTopToken(uint index) public
+- function removeTopToken(uint index) public
 
 // 获取token详细信息
-function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection)
+- function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection)
 
 // 根据简称获取token信息
-function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) 
+-function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) 
 
 // 校验简称是否可用
-function checkShorthandName(string memory shorthandName) public view returns(bool result)
+- function checkShorthandName(string memory shorthandName) public view returns(bool result)
 
 // 发布token
-function publishToken(TokenInfoModel.CreateToken memory createToken) public
+- function publishToken(TokenInfoModel.CreateToken memory createToken) public
 
 // 删除token （合约内部使用）
-function removeToken(string memory shorthandName) public
+- function removeToken(string memory shorthandName) public
 
 #### 2、 UserToken 合约
 // 获取用户token列表
-function getUserTokenList(uint8 _option, address _userAccount, uint index, uint pageSize) public view returns(address[] memory itemList, uint[] memory indexList)
+- function getUserTokenList(uint8 _option, address _userAccount, uint index, uint pageSize) public view returns(address[] memory itemList, uint[] memory indexList)
 
 // 收藏token
-function collectionToken(address _token, uint _option) public
+- function collectionToken(address _token, uint _option) public
 
 // 添加我的token （合约内部使用）
-function addMyToken(address _token, address _userAccount) external
+- function addMyToken(address _token, address _userAccount) external
 
 // 是否收藏合约
-function isCollection(address account, address token) external override view returns(bool)
+- function isCollection(address account, address token) external override view returns(bool)
 
 #### 3、Sensitive 合约
 
 // 添加敏感词
-function addWords(string memory _words) public
+- function addWords(string memory _words) public
 
 // 校验敏感词
-function checkWords(string calldata _words)  external override view returns(bool result)
+- function checkWords(string calldata _words)  external override view returns(bool result)
 
 // 移除敏感词
-function removeWord(string memory _words) public
+- function removeWord(string memory _words) public
 
 #### 4、BizMarket 合约
 // 设置广告信息
-function setBanner(string memory _bannerListStr) public
+- function setBanner(string memory _bannerListStr) public
 
 // 获取广告信息
-function getBanner() public view returns(string memory)
+- function getBanner() public view returns(string memory)
 
 // 设置热搜词
-function setHotSearch(string memory _hotSearchListStr) public
+- function setHotSearch(string memory _hotSearchListStr) public
 
 // 获取热搜词
-function getHotSearch() public view returns(string memory)
+- function getHotSearch() public view returns(string memory)
 
 
 ### 三、测试数据
 管理员账户： 0x0086dcf09d1bd311f36df5674730847a7900a7f2af679167a5fae2699bde9e44
 
 合约地址：
-0x80a3620b98d0c02d6874780b3fb6d6559279feef  tokenbank 合约
-0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
-0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
-0x82c2b89247806526468cbf1e8365760fdf5e7e34  BizMarket 合约
+- 0x80a3620b98d0c02d6874780b3fb6d6559279feef  tokenbank 合约
+- 0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
+- 0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
+- 0x82c2b89247806526468cbf1e8365760fdf5e7e34  BizMarket 合约
 
 ### 四、合约abi
 

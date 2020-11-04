@@ -26,7 +26,7 @@
 - function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection)
 
 // 根据简称获取token信息
--function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) 
+- function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) 
 
 // 校验简称是否可用
 - function checkShorthandName(string memory shorthandName) public view returns(bool result)
@@ -74,6 +74,38 @@
 // 获取热搜词
 - function getHotSearch() public view returns(string memory)
 
+#### 5、Token模型
+~~~
+    struct TokenInfo {
+        string tokenName;
+        string shorthandName;
+        address token;
+        address owner;
+        uint total;
+        uint totalSupply;
+        uint holderNum;
+        uint haveNum;
+        string img;
+        bool burning;
+        bool increase;
+        uint decimals;
+        string note;
+        string attribute;
+        uint createTime;
+    }
+    // ["ERC20","ERC20", 1000,"/abc",false,false,10,"abc","def"]
+    struct CreateToken {
+        string tokenName;
+        string shorthandName;
+        uint total;
+        string img;
+        bool burning;
+        bool increase;
+        uint decimals;
+        string note;
+        string attribute;
+    }
+~~~
 
 ### 三、测试数据
 管理员账户： 0x0086dcf09d1bd311f36df5674730847a7900a7f2af679167a5fae2699bde9e44

@@ -9,292 +9,708 @@
 
 ### 二、接口文档
 
-#### 1、查询top-token
+#### 1、TokenBank 合约
+// 查询首页列表
+function getHomeTokenList(uint index, uint pageSize) public view returns(address[] memory tokens, uint[] memory indexs)
+
+// 查询顶部token
+function getTopToken(uint index, uint pageSize) public view returns(address[] memory, string[] memory)
+
+// 添加顶部token
+function addTopToken(address token, string memory note) public
+
+// 删除顶部token
+function removeTopToken(uint index) public
+
+// 获取token详细信息
+function getTokenInfo(address userAccount, address tokenAddr) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection)
+
+// 根据简称获取token信息
+function getTokenByShorthandName(string memory shorthandName, address userAccount) public view returns(TokenInfoModel.TokenInfo memory tokenInfo, bool collection) 
+
+// 校验简称是否可用
+function checkShorthandName(string memory shorthandName) public view returns(bool result)
+
+// 发布token
+function publishToken(TokenInfoModel.CreateToken memory createToken) public
+
+// 删除token （合约内部使用）
+function removeToken(string memory shorthandName) public
+
+#### 2、 UserToken 合约
+// 获取用户token列表
+function getUserTokenList(uint8 _option, address _userAccount, uint index, uint pageSize) public view returns(address[] memory itemList, uint[] memory indexList)
+
+// 收藏token
+function collectionToken(address _token, uint _option) public
+
+// 添加我的token （合约内部使用）
+function addMyToken(address _token, address _userAccount) external
+
+// 是否收藏合约
+function isCollection(address account, address token) external override view returns(bool)
+
+#### 3、Sensitive 合约
+
+// 添加敏感词
+function addWords(string memory _words) public
+
+// 校验敏感词
+function checkWords(string calldata _words)  external override view returns(bool result)
+
+// 移除敏感词
+function removeWord(string memory _words) public
+
+#### 4、BizMarket 合约
+// 设置广告信息
+function setBanner(string memory _bannerListStr) public
+
+// 获取广告信息
+function getBanner() public view returns(string memory)
+
+// 设置热搜词
+function setHotSearch(string memory _hotSearchListStr) public
+
+// 获取热搜词
+function getHotSearch() public view returns(string memory)
+
+
+### 三、测试数据
+管理员账户： 0x0086dcf09d1bd311f36df5674730847a7900a7f2af679167a5fae2699bde9e44
+
+合约地址：
+0x80a3620b98d0c02d6874780b3fb6d6559279feef  tokenbank 合约
+0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
+0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
+0x82c2b89247806526468cbf1e8365760fdf5e7e34  BizMarket 合约
+
+### 四、合约abi
+
+userToken abi信息
+~~~
+[
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_tokenBankAddress",
+          "type": "address"
+        }
+      ],
+      "name": "setTokenBank",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_option",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "_userAccount",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pageSize",
+          "type": "uint256"
+        }
+      ],
+      "name": "getUserTokenList",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "itemList",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "indexList",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_option",
+          "type": "uint256"
+        }
+      ],
+      "name": "collectionToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_userAccount",
+          "type": "address"
+        }
+      ],
+      "name": "addMyToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "isCollection",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+~~~
+
+Sensitive abi信息
+
+~~~
+[
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_words",
+          "type": "string"
+        }
+      ],
+      "name": "del",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract ITokenBank",
+          "name": "_tokenBank",
+          "type": "address"
+        }
+      ],
+      "name": "setTokenBank",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_words",
+          "type": "string"
+        }
+      ],
+      "name": "addWords",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_words",
+          "type": "string"
+        }
+      ],
+      "name": "checkWords",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "result",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_words",
+          "type": "string"
+        }
+      ],
+      "name": "removeWord",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+~~~
+
+tokenbank abi信息
+~~~
+[
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "contract ISensitive",
+          "name": "sensitiveAddr",
+          "type": "address"
+        },
+        {
+          "internalType": "contract IUserToken",
+          "name": "userTokenAddr",
+          "type": "address"
+        }
+      ],
+      "name": "setContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pageSize",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTopToken",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "note",
+          "type": "string"
+        }
+      ],
+      "name": "addTopToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeTopToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "pageSize",
+          "type": "uint256"
+        }
+      ],
+      "name": "getHomeTokenList",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "indexs",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "userAccount",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenAddr",
+          "type": "address"
+        }
+      ],
+      "name": "getTokenInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "tokenName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "shorthandName",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "total",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalSupply",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "holderNum",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "haveNum",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "img",
+              "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "burning",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "increase",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "decimals",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "note",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "attribute",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "createTime",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TokenInfoModel.TokenInfo",
+          "name": "tokenInfo",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bool",
+          "name": "collection",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "shorthandName",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "userAccount",
+          "type": "address"
+        }
+      ],
+      "name": "getTokenByShorthandName",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "tokenName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "shorthandName",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "token",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "total",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalSupply",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "holderNum",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "haveNum",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "img",
+              "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "burning",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "increase",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "decimals",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "note",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "attribute",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "createTime",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TokenInfoModel.TokenInfo",
+          "name": "tokenInfo",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bool",
+          "name": "collection",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "shorthandName",
+          "type": "string"
+        }
+      ],
+      "name": "checkShorthandName",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "result",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "tokenName",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "shorthandName",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "total",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "img",
+              "type": "string"
+            },
+            {
+              "internalType": "bool",
+              "name": "burning",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "increase",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "decimals",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "note",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "attribute",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct TokenInfoModel.CreateToken",
+          "name": "createToken",
+          "type": "tuple"
+        }
+      ],
+      "name": "publishToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "shorthandName",
+          "type": "string"
+        }
+      ],
+      "name": "removeToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+~~~
 
-合约名称： TokenBank
-
-合约函数： getTopToken
-
-入参： 无
-
-出参： (address[] tokens)
-
-示例： [0x18c7e9e088cd75f69c36331a6517271bcc502651,0x18c7e9e088cd75f69c36331a6517271bcc502651]
-
-#### 2、查询首页token
-
-合约名称： TokenBank
-
-合约函数： getHomeTokenList
-
-入参： (uint pageNo, uint pageSize)
-
-出参： address[] 列表
-
-示例： [0x18c7e9e088cd75f69c36331a6517271bcc502651,0x18c7e9e088cd75f69c36331a6517271bcc502651]
-
-#### 3、查询合约信息
-
-合约名称： TokenBank
-
-合约函数： getTokenInfo
-
-入参： (address _userAccount, address _token)
-
-出参： (
-    string tokenName,
-    string shorthandName,
-    address token,
-    address owner,
-    uint total,
-    uint totalSupply,
-    uint holderNum,
-    uint haveNum,
-    uint collection, 
-    string img,
-    uint burning,
-    uint increase,
-    uint decimals,
-    string note,
-    uint tokenType
-)
-
-注释： 
-> collection 0：未收藏，1：已收藏； 
-> burning 0：不能燃烧，1：可以燃烧； 
-> increase 0：不能增发，1：可以增发；
-> tokenType 1：erc20，2：erc721
-
-#### 4、根据简称搜索token
-
-合约名称：TokenBank
-
-合约函数： getTokenByShorthandName
-
-入参：(string _shorthandName, address _userAccount)
-
-出参：(
-       string tokenName,
-       string shorthandName,
-       address token,
-       address owner,
-       uint total,
-       uint totalSupply,
-       uint holderNum,
-       uint haveNum,
-       uint collection, 
-       string img,
-       uint burning,
-       uint increase,
-       uint decimals,
-       string note,
-       string attribute,
-       uint tokenType
-   )
-   
-#### 5、检查token是否可用
-
-合约名称：TokenBank
-
-合约函数：checkShorthandName
-
-入参：(string _shorthandName)
-
-出参：(bool result)
-
-注释：true 可用，false 不可用
-
-#### 6、发行token
-
-合约名称：TokenBank
-
-合约函数：publishToken
-
-入参： (
-    uint _tokenType,
-    string _tokenName,
-    string _shorthandName,
-    uint _total,
-    string _img,
-    uint _burning,
-    uint _increase,
-    uint _decimals,
-    string _note,
-    string _attribute
-)
-
-出参： (
-    string result
-)
-
-注释： 'success' 成功； 'sensitive' 敏感的简称； 'exists' 简称已存在；
-
-#### 7、获取用户token列表
-
-合约名称：UserToken
-
-合约函数：getUserTokenList
-
-入参：(uint _range, uint _option, address _userAccount, uint pageNo, uint pageSize)
-
-出参： (address[] tokens)
-
-注释： 
-> range 1：全部；2：erc20；3：erc721 。 option 1：我的收藏；2：我的创建
-
-#### 8、收藏token
-
-合约名称：UserToken
-
-合约函数：collectionToken
-
-入参： (address _token, uint _option)
-
-出参： (string result)
-
-注释：
-> _option 1：收藏； 2：取消收藏。 result 'success'：成功；'not exists'：token不存在。
-
-#### 9、添加我的token(给TokenBank使用)
-
-合约名称：UserToken
-
-合约函数：addMyToken
-
-入参：(address _token, address _userAccount)
-
-出参：(bool result)
-
-#### 10、查询banner
-
-合约名称：BizMarket
-
-合约函数：getBanner
-
-入参：无
-
-出参：(string bannerListStr)
-
-注释：
-> 出参格式是json字符串，由前端进行自行定义。
-
-#### 11、设置banner
-
-合约名称：BizMarket
-
-合约函数：setBanner
-
-入参：(string _bannerListStr)
-
-出参：无
-
-注释：
-> 入参格式是json字符串，由前端进行自行定义。
-
-#### 12、查询热门搜索
-
-合约名称：BizMarket
-
-合约函数：getHotSearch
-
-入参：无
-
-出参：(string hotSearchListStr)
-
-注释：
-> 出参格式是json字符串，由前端进行自行定义。
-
-#### 13、设置热门搜索
-
-合约名称：BizMarket
-
-合约函数：setHotSearch
-
-入参：(string _hotSearchListStr)
-
-出参：无
-
-注释：
-> 入参格式是json字符串，由前端进行自行定义。
-
-#### 14、添加敏感词
-
-合约名称：Sensitive
-
-合约函数：addWords
-
-入参：(string _words)
-
-出参：无
-
-#### 15、移除token(给Sensitive合约使用)
-
-合约名称：TokenBank
-
-合约函数：removeToken
-
-入参：(string _shorthandName)
-
-出参：无
-
-#### 16、判断是否敏感(给TokenBank合约使用)
-
-合约名称：Sensitive
-
-合约函数：checkWords
-
-入参：(string _words)
-
-出参：(bool result)
-
-#### 17、ERC20转账
-
-合约名称：ERC20
-
-合约函数：transfer
-
-入参：(address to, uint256 value)
-
-出参：(bool result)
-
-注释：
-> 这里调用的是token的合约方法
-
-#### 18、ERC721转账
-
-合约名称：ERC721
-
-合约函数：transferFrom
-
-入参：(address from, address to, uint256 tokenId)
-
-出参：无
-
-注释：
-> 这里调用的是token的合约方法
-
-#### 19、燃烧Token
-
-合约名称：Token
-
-合约函数：burning
-
-入参：(uint _num)
-
-出参：无
-
-注释：
-> 这里调用的是token的合约方法
-
-#### 20、增发Token
-
-合约名称：Token
-
-合约函数：increase
-
-入参：(uint _num)
-
-出参：无
-
-注释：
-> 这里调用的是token的合约方法

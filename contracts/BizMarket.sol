@@ -4,9 +4,12 @@ pragma experimental ABIEncoderV2;
 contract BizMarket{
     string bannerListStr;
     string hotSearchListStr;
+
+    address owner;
+
     //11������banner 
     function setBanner(string memory _bannerListStr) public {
-        
+        require(owner == msg.sender,"only owner");
         bannerListStr = _bannerListStr;
     }
     
@@ -18,7 +21,7 @@ contract BizMarket{
     
      //13��������������
     function setHotSearch(string memory _hotSearchListStr) public {
-        
+        require(owner == msg.sender,"only owner");
         hotSearchListStr = _hotSearchListStr;
     }
     

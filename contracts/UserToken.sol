@@ -53,7 +53,7 @@ contract UserToken is IUserToken {
     
     function collectionToken(address _token, uint _option) public {
         
-        require(_option == uint8(OperateOption.COLLECTION) || _option == uint8(OperateOption.CANCEL),"optionrequire 0 or 0");
+        require(_option == uint8(OperateOption.COLLECTION) || _option == uint8(OperateOption.CANCEL),"optionrequire 0 or 1");
         
         _addUserToken(_token, uint8(UserOption.COLLECTION), msg.sender, _option == uint8(OperateOption.CANCEL));
         

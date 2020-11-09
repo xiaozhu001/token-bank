@@ -26,6 +26,7 @@ contract Sensitive is ISensitive {
         tokenBank = _tokenBank;
     }
     
+    //添加敏感词
     function addWords(string memory _words) public onlyOwner {
         
         if (wordsMap[_words]) {
@@ -40,13 +41,14 @@ contract Sensitive is ISensitive {
        
     }
     
+    //判断是否敏感(给TokenBank合约使用)
     function checkWords(string calldata _words)  external override view returns(bool result) {
         
         return wordsMap[_words];
       
     }
     
-    
+    //移除敏感词
     function removeWord(string memory _words) public onlyOwner {
         if (!wordsMap[_words]) {
             return;

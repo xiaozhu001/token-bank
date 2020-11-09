@@ -7,25 +7,25 @@ contract BizMarket{
 
     address owner;
 
-    //11������banner 
+    //11设置banner 
     function setBanner(string memory _bannerListStr) public {
         require(owner == msg.sender,"only owner");
         bannerListStr = _bannerListStr;
     }
     
-    //10����ѯbanner  ���θ�ʽ��json�ַ�������ǰ�˽������ж��塣
+    //10查询banner 出参格式是json字符串，由前端进行自行定义
     function getBanner() public view returns(string memory){
         
         return bannerListStr;
     }
     
-     //13��������������
+     //13设置热门搜索 入参格式是json字符串，由前端进行自行定义
     function setHotSearch(string memory _hotSearchListStr) public {
         require(owner == msg.sender,"only owner");
         hotSearchListStr = _hotSearchListStr;
     }
     
-    //12����ѯ��������  ���θ�ʽ��json�ַ�������ǰ�˽������ж��塣
+    //12查询热门搜索  出参格式是json字符串，由前端进行自行定义
     function getHotSearch() public view returns(string memory){
         
         return hotSearchListStr;

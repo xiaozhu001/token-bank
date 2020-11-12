@@ -114,7 +114,7 @@
 - 0x80a3620b98d0c02d6874780b3fb6d6559279feef  tokenbank 合约
 - 0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
 - 0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
-- 0x82c2b89247806526468cbf1e8365760fdf5e7e34  BizMarket 合约
+- 0x8004e3e3b41d72eb7a58529f68e119b0e101dba1  BizMarket 合约
 
 ### 四、合约abi
 

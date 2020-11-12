@@ -7,6 +7,11 @@ contract BizMarket{
 
     address owner;
 
+    
+    constructor() public {
+        owner = msg.sender;
+    }
+
     //11������banner 
     function setBanner(string memory _bannerListStr) public {
         require(owner == msg.sender,"only owner");

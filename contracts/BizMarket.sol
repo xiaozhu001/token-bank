@@ -7,16 +7,12 @@ contract BizMarket{
 
     address owner;
 
-<<<<<<< HEAD
     
     constructor() public {
         owner = msg.sender;
     }
 
-    //11������banner 
-=======
     //11设置banner 
->>>>>>> 8f3a62b0c9d81770a0385059d856454aa2ec0f2e
     function setBanner(string memory _bannerListStr) public {
         require(owner == msg.sender,"only owner");
         bannerListStr = _bannerListStr;

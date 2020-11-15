@@ -78,7 +78,7 @@ contract TokenBank is ITokenBank {
         if (!token.exist) {
             return (tokenInfo, false);
         }
-        TokenInfoModel.TokenInfo memory tokenInfo = ITokenExtend(tokenAddr).getInfo();
+        tokenInfo = ITokenExtend(tokenAddr).getInfo();
         tokenInfo.haveNum = ERC20(tokenAddr).balanceOf(userAccount);
         collection = userTokenContract.isCollection(userAccount, tokenAddr);
     }

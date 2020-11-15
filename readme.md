@@ -112,7 +112,7 @@
 
 合约地址：
 - 0x83d323fd2ae84eabd8e3a042dc76b2ccc58cb57f  tokenbank 合约
-- 0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
+- 0x88f3c7a1ab7068aaf6df90649ab8388ac3e9ae85  userToken 合约
 - 0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
 - 0x8004e3e3b41d72eb7a58529f68e119b0e101dba1  BizMarket 合约
 

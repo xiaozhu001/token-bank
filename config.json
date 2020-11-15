@@ -1,6 +1,6 @@
 {
-  "main": "./contracts/TokenBank.sol",
-  "deploy": "./build/contracts/TokenBank.json",
+  "main": "./contracts/UserToken.sol",
+  "deploy": "./build/contracts/UserToken.json",
   "compilers": {
     "cfxtruffle": "0.0.8",
     "solc": "0.6.12"

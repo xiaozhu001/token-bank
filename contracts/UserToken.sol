@@ -1,5 +1,6 @@
 pragma solidity >=0.4.0 <0.7.0;
 pragma experimental ABIEncoderV2;
+
 import "./AddressLinkedList.sol";
 import "./IUserToken.sol";
 
@@ -13,7 +14,12 @@ contract UserToken is IUserToken {
         COLLECTION,
         CREATE
     }
-    
+
+    enum OperateOption {
+        COLLECTION,
+        CANCEL
+    }
+
     constructor() public {
         owner = msg.sender;
     }
@@ -34,7 +40,7 @@ contract UserToken is IUserToken {
     mapping(address => mapping(uint8 => mapping(address => uint))) userTokenIndexMap;
     
 
-    // option 1：我的收藏；2：我的创建
+    // option 0：我的收藏；1：我的创建
     function getUserTokenList(uint8 _option, address _userAccount, uint index, uint pageSize) public view returns(address[] memory itemList, uint[] memory indexList) {
        require(_option == uint8(UserOption.COLLECTION) || _option == uint8(UserOption.CREATE),"require 0 1");
        
@@ -43,13 +49,13 @@ contract UserToken is IUserToken {
     
     
 
-    //_option 1：收藏； 2：取消收藏。 result 'success'：成功；'not exists'：token不存在。
+    //_option 0：收藏； 1：取消收藏。 
     
     function collectionToken(address _token, uint _option) public {
         
-        require(_option == 1 || _option == 2,"optionrequire 1 or 2");
+        require(_option == uint8(OperateOption.COLLECTION) || _option == uint8(OperateOption.CANCEL),"optionrequire 0 or 1");
         
-        _addUserToken(_token, uint8(UserOption.COLLECTION), msg.sender, _option == 1);
+        _addUserToken(_token, uint8(UserOption.COLLECTION), msg.sender, _option == uint8(OperateOption.CANCEL));
         
         
     }

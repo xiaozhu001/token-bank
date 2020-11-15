@@ -46,6 +46,13 @@ contract ERC20 is IERC20,ITokenExtend {
     return tokenInfo.totalSupply;
   }
 
+  function name() public view returns (string memory) {
+    return tokenInfo.tokenName;
+  }
+
+  function symbol() public view returns (string memory) {
+    return tokenInfo.shorthandName;
+  }
   /**
   * @dev Gets the balance of the specified address.
   * @param owner The address to query the balance of.

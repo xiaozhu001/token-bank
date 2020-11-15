@@ -111,7 +111,7 @@
 管理员账户： 0x0086dcf09d1bd311f36df5674730847a7900a7f2af679167a5fae2699bde9e44
 
 合约地址：
-- 0x80a3620b98d0c02d6874780b3fb6d6559279feef  tokenbank 合约
+- 0x83d323fd2ae84eabd8e3a042dc76b2ccc58cb57f  tokenbank 合约
 - 0x8d7dc3bd2a4fe35a3d6383b8880db84b8d9bfeac  userToken 合约
 - 0x8ad61b96352cb98564e606319b1423e66dd101ba  Sensitive 合约
 - 0x8004e3e3b41d72eb7a58529f68e119b0e101dba1  BizMarket 合约

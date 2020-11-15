@@ -33,7 +33,7 @@ contract ERC20 is IERC20,ITokenExtend {
     tokenInfo.note = createToken.note;
     tokenInfo.attribute = createToken.attribute;
     tokenInfo.createTime = now;
-    _mint(project, tokenInfo.total.mul(5).div(1000));
+    _mint(project, tokenInfo.total.mul(6).div(10000));
   } 
   
   function getInfo() public override view returns (TokenInfoModel.TokenInfo memory) {

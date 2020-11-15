@@ -73,8 +73,89 @@
 
 // 获取热搜词
 - function getHotSearch() public view returns(string memory)
+#### 5、ERC20 合约
+//token发行总量
+- function totalSupply() public override view returns (uint256)
 
-#### 5、Token模型
+//获取token名称
+- function name() public view returns (string memory) 
+
+//获取token名称
+- function symbol() public view returns (string memory) 
+
+/**
+* @dev Gets the balance of the specified address.
+* @param owner The address to query the balance of.
+* @return An uint256 representing the amount owned by the passed address.
+*/
+
+- function balanceOf(address owner) public override view returns (uint256)
+
+/**
+* @dev Function to check the amount of tokens that an owner allowed to a spender.
+* @param owner address The address which owns the funds.
+* @param spender address The address which will spend the funds.
+* @return A uint256 specifying the amount of tokens still available for the spender.
+*/
+- function allowance(address owner, address spender) public override view returns (uint256)
+
+/**
+* @dev Transfer token for a specified address
+* @param to The address to transfer to.
+* @param value The amount to be transferred.
+*/
+- function transfer(address to, uint256 value) public override returns (bool)
+
+/**
+* @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
+* Beware that changing an allowance with this method brings the risk that someone may use both the old
+* and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
+* race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
+* https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+* @param spender The address which will spend the funds.
+* @param value The amount of tokens to be spent.
+*/
+- function approve(address spender, uint256 value) public override returns (bool)
+
+/**
+* @dev Transfer tokens from one address to another
+* @param from address The address which you want to send tokens from
+* @param to address The address which you want to transfer to
+* @param value uint256 the amount of tokens to be transferred
+*/
+- function transferFrom(address from, address to, uint256 value) public override returns (bool)
+
+/**
+* @dev Increase the amount of tokens that an owner allowed to a spender.
+* approve should be called when allowed_[_spender] == 0. To increment
+* allowed value is better to use this function to avoid 2 calls (and wait until
+* the first transaction is mined)
+* From MonolithDAO Token.sol
+* @param spender The address which will spend the funds.
+* @param addedValue The amount of tokens to increase the allowance by.
+*/
+- function increaseAllowance(address spender, uint256 addedValue) public returns (bool)
+
+
+/**
+* @dev Decrease the amount of tokens that an owner allowed to a spender.
+* approve should be called when allowed_[_spender] == 0. To decrement
+* allowed value is better to use this function to avoid 2 calls (and wait until
+* the first transaction is mined)
+* From MonolithDAO Token.sol
+* @param spender The address which will spend the funds.
+* @param subtractedValue The amount of tokens to decrease the allowance by.
+*/
+- function decreaseAllowance(address spender,uint256 subtractedValue) public returns (bool) 
+
+
+//空投token
+- function airdrop(address account, uint256 amount) public onlyOwner 
+
+//燃烧token
+- function burn(uint256 amount) public 
+
+#### 6、Token模型
 ~~~
     struct TokenInfo {
         string tokenName;
@@ -804,3 +885,454 @@ BizMarket abi信息
   ]
 ~~~
 
+
+ERC20 abi信息
+
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "project",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "shorthandName",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "total",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "img",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "burning",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "increase",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "decimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "note",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "attribute",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct TokenInfoModel.CreateToken",
+        "name": "createToken",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "airdrop",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "subtractedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "decreaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getInfo",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "tokenName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "shorthandName",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "total",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "holderNum",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "haveNum",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "img",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "burning",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "increase",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "decimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "note",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "attribute",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct TokenInfoModel.TokenInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "addedValue",
+        "type": "uint256"
+      }
+    ],
+    "name": "increaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
